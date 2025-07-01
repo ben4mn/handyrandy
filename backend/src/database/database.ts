@@ -69,8 +69,16 @@ export async function initializeDatabase(): Promise<Database> {
         console.error('Error opening database:', err);
         reject(err);
       } else {
-        console.log('📊 Connected to SQLite database at:', dbPath);
-        resolve(new DatabaseConnection(db));
+        // Enable foreign key constraints
+        db.run('PRAGMA foreign_keys = ON', (pragmaErr) => {
+          if (pragmaErr) {
+            console.error('Error enabling foreign keys:', pragmaErr);
+            reject(pragmaErr);
+          } else {
+            console.log('📊 Connected to SQLite database at:', dbPath);
+            resolve(new DatabaseConnection(db));
+          }
+        });
       }
     });
   });
