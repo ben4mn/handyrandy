@@ -16,7 +16,7 @@ import {
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
+  baseURL: '/api', // Use relative path since frontend and backend are served from same domain/port
   timeout: 30000, // Increased timeout for AI requests
   headers: {
     'Content-Type': 'application/json',
