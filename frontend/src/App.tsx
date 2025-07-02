@@ -55,38 +55,24 @@ function App() {
   };
 
   return (
-    <div className="main-layout">
-      {/* Mobile nav toggle */}
-      <button 
-        className="nav-toggle"
-        onClick={toggleNav}
-        style={{ display: window.innerWidth <= 1024 ? 'block' : 'none' }}
-      >
-        ☰
-      </button>
-
+    <div className="App">
       {/* Navigation */}
-      <div className={`navigation ${isNavOpen ? 'nav-open' : ''}`}>
-        <Navigation 
-          currentPage={currentPage} 
-          onNavigate={handleNavigate}
-        />
-        
-        {/* API Status in navigation footer */}
-        <div className="nav-footer">
-          <div className="nav-status">
-            <div className={`status-indicator status-${apiStatus === 'online' ? 'online' : 'offline'}`}></div>
-            <span>
-              {apiStatus === 'checking' ? 'Checking...' : 
-               apiStatus === 'online' ? 'API Connected' : 'API Offline'}
-            </span>
-          </div>
-        </div>
-      </div>
+      <Navigation 
+        currentPage={currentPage} 
+        onNavigate={handleNavigate}
+        apiStatus={apiStatus}
+        isNavOpen={isNavOpen}
+        onToggleNav={toggleNav}
+      />
 
       {/* Main Content */}
-      <main className="main-content">
-        {renderCurrentPage()}
+      <main className="main-container">
+        {currentPage !== 'chat' && (
+          <div className="page-content">
+            {renderCurrentPage()}
+          </div>
+        )}
+        {currentPage === 'chat' && renderCurrentPage()}
       </main>
 
       {/* Mobile nav overlay */}
@@ -101,8 +87,7 @@ function App() {
             right: 0,
             bottom: 0,
             background: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 999,
-            display: window.innerWidth <= 1024 ? 'block' : 'none'
+            zIndex: 999
           }}
         />
       )}

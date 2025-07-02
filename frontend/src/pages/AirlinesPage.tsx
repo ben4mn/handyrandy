@@ -208,35 +208,39 @@ export const AirlinesPage: React.FC = () => {
   };
 
   return (
-    <div className="airlines-page">
+    <>
       <div className="page-header">
-        <div className="page-title">
-          <h1>Airlines Management</h1>
-          <p>Manage airline information and configurations</p>
-        </div>
-
-        {viewMode === 'list' && (
-          <div className="page-actions">
-            <button
-              onClick={handleAddNew}
-              className="btn btn-primary"
-            >
-              + Add New Airline
-            </button>
-            <button
-              onClick={loadAirlines}
-              className="btn btn-secondary"
-              disabled={loadingState.isLoading}
-            >
-              🔄 Refresh
-            </button>
+        <div className="page-header-container">
+          <div className="page-title">
+            <h1>Airlines Management</h1>
+            <p>Manage airline information and configurations</p>
           </div>
-        )}
+
+          {viewMode === 'list' && (
+            <div className="page-actions">
+              <button
+                onClick={handleAddNew}
+                className="btn btn-primary"
+              >
+                + Add New Airline
+              </button>
+              <button
+                onClick={loadAirlines}
+                className="btn btn-secondary"
+                disabled={loadingState.isLoading}
+              >
+                🔄 Refresh
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="page-content">
-        {renderContent()}
+      <div className="card">
+        <div className="card-body">
+          {renderContent()}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

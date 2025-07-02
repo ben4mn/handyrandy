@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface NavigationProps {
   currentPage: string;
   onNavigate: (page: string) => void;
+  apiStatus: 'online' | 'offline' | 'checking';
+  isNavOpen: boolean;
+  onToggleNav: () => void;
 }
 
-export const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate }) => {
+export const Navigation: React.FC<NavigationProps> = ({ 
+  currentPage, 
+  onNavigate, 
+  apiStatus, 
+  isNavOpen, 
+  onToggleNav 
+}) => {
   const navItems = [
     { id: 'airlines', label: 'Airlines', icon: '✈️' },
     { id: 'features', label: 'Features', icon: '🔧' },
@@ -13,35 +22,78 @@ export const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate 
     { id: 'chat', label: 'AI Chat', icon: '💬' },
   ];
 
+  const getStatusIcon = () => {
+    switch (apiStatus) {
+      case 'online': return '✅';
+      case 'offline': return '❌';
+      case 'checking': return '🔄';
+      default: return '❓';
+    }
+  };
+
+  const getStatusText = () => {
+    switch (apiStatus) {
+      case 'online': return 'API Connected';
+      case 'offline': return 'API Offline';
+      case 'checking': return 'Checking...';
+      default: return 'Unknown';
+    }
+  };
+
   return (
     <nav className="navigation">
-      <div className="nav-header">
-        <h1 className="nav-title">
-          <span className="nav-icon">🛩️</span>
-          NDC Features
-        </h1>
-        <p className="nav-subtitle">Airline Feature Management</p>
+      <div className="nav-container">
+        {/* Brand */}
+        <div className="nav-brand">
+          <div className="nav-brand-icon">NDC</div>
+          <span>Features Manager</span>
+        </div>
+
+        {/* Desktop Navigation */}
+        <ul className="nav-links">
+          {navItems.map((item) => (
+            <li key={item.id}>
+              <button
+                onClick={() => onNavigate(item.id)}
+                className={`nav-link ${currentPage === item.id ? 'active' : ''}`}
+              >
+                <span className="nav-link-icon">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        {/* API Status */}
+        <div className={`service-status ${apiStatus}`} style={{ margin: 0, padding: '8px 12px' }}>
+          <span className="status-icon">{getStatusIcon()}</span>
+          <span style={{ fontSize: '12px' }}>{getStatusText()}</span>
+        </div>
+
+        {/* Mobile Toggle */}
+        <button 
+          className="nav-mobile-toggle"
+          onClick={onToggleNav}
+        >
+          ☰
+        </button>
       </div>
 
-      <ul className="nav-menu">
-        {navItems.map((item) => (
-          <li key={item.id}>
-            <button
-              onClick={() => onNavigate(item.id)}
-              className={`nav-item ${currentPage === item.id ? 'nav-item-active' : ''}`}
-            >
-              <span className="nav-item-icon">{item.icon}</span>
-              <span className="nav-item-label">{item.label}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <div className="nav-footer">
-        <div className="nav-status">
-          <div className="status-indicator status-online"></div>
-          <span>API Connected</span>
-        </div>
+      {/* Mobile Menu */}
+      <div className={`nav-mobile-menu ${isNavOpen ? 'open' : ''}`}>
+        <ul className="nav-mobile-links">
+          {navItems.map((item) => (
+            <li key={item.id}>
+              <button
+                onClick={() => onNavigate(item.id)}
+                className={`nav-link ${currentPage === item.id ? 'active' : ''}`}
+              >
+                <span className="nav-link-icon">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
     </nav>
   );
