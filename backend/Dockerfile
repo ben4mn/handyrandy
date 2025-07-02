@@ -5,13 +5,13 @@ FROM node:18-alpine AS frontend-build
 WORKDIR /app/frontend
 
 # Copy frontend package files
-COPY ../frontend/package*.json ./
+COPY frontend/package*.json ./
 
 # Install frontend dependencies
 RUN npm install
 
 # Copy frontend source
-COPY ../frontend ./
+COPY frontend/ ./
 
 # Build the React app
 RUN npm run build
@@ -22,13 +22,13 @@ FROM node:18-alpine AS backend-build
 WORKDIR /app
 
 # Copy backend package files
-COPY package*.json ./
+COPY backend/package*.json ./
 
 # Install all dependencies (including dev dependencies needed for build)
 RUN npm install
 
 # Copy backend source code
-COPY . .
+COPY backend/ .
 
 # Build TypeScript
 RUN npm run build
