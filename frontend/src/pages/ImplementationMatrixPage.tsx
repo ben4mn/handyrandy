@@ -99,27 +99,31 @@ export const ImplementationMatrixPage: React.FC = () => {
   };
 
   return (
-    <div className="implementation-matrix-page">
+    <>
       <div className="page-header">
-        <div className="page-title">
-          <h1>Implementation Matrix</h1>
-          <p>Manage feature implementations across airlines</p>
-        </div>
+        <div className="page-header-container">
+          <div className="page-title">
+            <h1>Implementation Matrix</h1>
+            <p>Manage feature implementations across airlines</p>
+          </div>
 
-        <div className="page-actions">
-          <button
-            onClick={loadAllData}
-            className="btn btn-secondary"
-            disabled={loadingState.isLoading}
-          >
-            🔄 Refresh
-          </button>
+          <div className="page-actions">
+            <button
+              onClick={loadAllData}
+              className="btn btn-secondary"
+              disabled={loadingState.isLoading}
+            >
+              🔄 Refresh
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="page-content">
-        {renderContent()}
+      <div className="card">
+        <div className="card-body">
+          {renderContent()}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

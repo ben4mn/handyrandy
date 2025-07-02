@@ -201,35 +201,39 @@ export const FeaturesPage: React.FC = () => {
   };
 
   return (
-    <div className="features-page">
+    <>
       <div className="page-header">
-        <div className="page-title">
-          <h1>Features Management</h1>
-          <p>Manage NDC features and capabilities</p>
-        </div>
-
-        {viewMode === 'list' && (
-          <div className="page-actions">
-            <button
-              onClick={handleAddNew}
-              className="btn btn-primary"
-            >
-              + Add New Feature
-            </button>
-            <button
-              onClick={loadFeatures}
-              className="btn btn-secondary"
-              disabled={loadingState.isLoading}
-            >
-              🔄 Refresh
-            </button>
+        <div className="page-header-container">
+          <div className="page-title">
+            <h1>Features Management</h1>
+            <p>Manage NDC features and capabilities</p>
           </div>
-        )}
+
+          {viewMode === 'list' && (
+            <div className="page-actions">
+              <button
+                onClick={handleAddNew}
+                className="btn btn-primary"
+              >
+                + Add New Feature
+              </button>
+              <button
+                onClick={loadFeatures}
+                className="btn btn-secondary"
+                disabled={loadingState.isLoading}
+              >
+                🔄 Refresh
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="page-content">
-        {renderContent()}
+      <div className="card">
+        <div className="card-body">
+          {renderContent()}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

@@ -18,7 +18,7 @@ export const ExampleQueries: React.FC<ExampleQueriesProps> = ({
 
   return (
     <div className="example-queries">
-      <h3 className="examples-title">💡 Try these example questions:</h3>
+      <h3 className="examples-title">Try these example questions:</h3>
       
       <div className="examples-grid">
         {examples.map((category, categoryIndex) => (
@@ -33,7 +33,6 @@ export const ExampleQueries: React.FC<ExampleQueriesProps> = ({
                   className="example-query-button"
                   title={`Click to use: ${query}`}
                 >
-                  <span className="query-icon">💬</span>
                   <span className="query-text">{query}</span>
                 </button>
               ))}

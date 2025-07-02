@@ -64,11 +64,6 @@ export const Navigation: React.FC<NavigationProps> = ({
           ))}
         </ul>
 
-        {/* API Status */}
-        <div className={`service-status ${apiStatus}`} style={{ margin: 0, padding: '8px 12px' }}>
-          <span className="status-icon">{getStatusIcon()}</span>
-          <span style={{ fontSize: '12px' }}>{getStatusText()}</span>
-        </div>
 
         {/* Mobile Toggle */}
         <button 
