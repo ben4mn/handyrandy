@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import path from 'path';
 import { initializeDatabase, createTables } from './database/database';
 import { seedDatabase } from './database/seed';
 import { DatabaseService } from './services/database.service';
@@ -14,10 +15,12 @@ import { createChatRouter } from './routes/chat';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3010;
 
 // Middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false, // Allow frontend assets to load
+}));
 app.use(cors());
 app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
@@ -42,7 +45,7 @@ async function startServer() {
     // Initialize database service
     const dbService = new DatabaseService(db);
     
-    // Set up API routes
+    // Set up API routes BEFORE static file serving
     app.use('/api/airlines', createAirlinesRouter(dbService));
     app.use('/api/features', createFeaturesRouter(dbService));
     app.use('/api/implementations', createImplementationsRouter(dbService));
@@ -63,9 +66,18 @@ async function startServer() {
       });
     });
 
-    // 404 handler
-    app.use('*', (req, res) => {
-      res.status(404).json({ error: 'Route not found' });
+    // Serve static frontend files
+    const frontendPath = path.join(__dirname, '../frontend-build');
+    app.use(express.static(frontendPath));
+
+    // Handle React Router - serve index.html for all non-API routes
+    app.get('*', (req, res) => {
+      // Only serve index.html for non-API routes
+      if (!req.path.startsWith('/api/')) {
+        res.sendFile(path.join(frontendPath, 'index.html'));
+      } else {
+        res.status(404).json({ error: 'API route not found' });
+      }
     });
 
     // Error handler
@@ -82,6 +94,7 @@ async function startServer() {
       console.log(`🔧 Features API: http://localhost:${PORT}/api/features`);
       console.log(`⚙️  Implementations API: http://localhost:${PORT}/api/implementations`);
       console.log(`💬 Chat API: http://localhost:${PORT}/api/chat`);
+      console.log(`🎨 Frontend served from: ${frontendPath}`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
