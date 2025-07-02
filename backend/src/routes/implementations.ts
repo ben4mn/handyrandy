@@ -229,6 +229,43 @@ export function createImplementationsRouter(dbService: DatabaseService): Router 
     }
   });
 
+  // PUT /api/implementations/:id - Update implementation by ID
+  router.put('/:id', validateId, validateUpdateImplementation, handleValidationErrors, async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates: UpdateImplementationRequest = req.body;
+      
+      // First get the implementation to find airline_id and feature_id
+      const existingImpl = await dbService.getImplementationById(id);
+      
+      const updatedImplementation = await dbService.updateImplementation(existingImpl.airline_id, existingImpl.feature_id, updates);
+      const response: ApiResponse = {
+        success: true,
+        data: updatedImplementation,
+        message: 'Implementation updated successfully'
+      };
+      res.json(response);
+    } catch (error) {
+      console.error('Error updating implementation:', error);
+      
+      if (error instanceof NotFoundError) {
+        const response: ApiResponse = {
+          success: false,
+          error: 'Not found',
+          message: error.message
+        };
+        return res.status(404).json(response);
+      }
+      
+      const response: ApiResponse = {
+        success: false,
+        error: 'Internal server error',
+        message: 'Failed to update implementation'
+      };
+      res.status(500).json(response);
+    }
+  });
+
   // DELETE /api/implementations/:airlineId/:featureId - Delete implementation
   router.delete('/:airlineId/:featureId', validateAirlineAndFeature, handleValidationErrors, async (req: Request, res: Response) => {
     try {

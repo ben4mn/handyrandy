@@ -9,6 +9,7 @@ import { DatabaseService } from './services/database.service';
 import { createAirlinesRouter } from './routes/airlines';
 import { createFeaturesRouter } from './routes/features';
 import { createImplementationsRouter } from './routes/implementations';
+import { createChatRouter } from './routes/chat';
 
 dotenv.config();
 
@@ -31,32 +32,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// API routes placeholder
-app.get('/api', (req, res) => {
-  res.json({ 
-    message: 'NDC Features AI Chatbot API',
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      airlines: '/api/airlines',
-      features: '/api/features',
-      implementations: '/api/implementations',
-      chat: '/api/chat'
-    }
-  });
-});
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
-
-// Error handler
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
-
 async function startServer() {
   try {
     // Initialize database
@@ -71,6 +46,33 @@ async function startServer() {
     app.use('/api/airlines', createAirlinesRouter(dbService));
     app.use('/api/features', createFeaturesRouter(dbService));
     app.use('/api/implementations', createImplementationsRouter(dbService));
+    app.use('/api/chat', createChatRouter(dbService));
+    
+    // API routes placeholder
+    app.get('/api', (req, res) => {
+      res.json({ 
+        message: 'NDC Features AI Chatbot API',
+        version: '1.0.0',
+        endpoints: {
+          health: '/api/health',
+          airlines: '/api/airlines',
+          features: '/api/features',
+          implementations: '/api/implementations',
+          chat: '/api/chat'
+        }
+      });
+    });
+
+    // 404 handler
+    app.use('*', (req, res) => {
+      res.status(404).json({ error: 'Route not found' });
+    });
+
+    // Error handler
+    app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+      console.error(err.stack);
+      res.status(500).json({ error: 'Something went wrong!' });
+    });
     
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
@@ -79,6 +81,7 @@ async function startServer() {
       console.log(`✈️  Airlines API: http://localhost:${PORT}/api/airlines`);
       console.log(`🔧 Features API: http://localhost:${PORT}/api/features`);
       console.log(`⚙️  Implementations API: http://localhost:${PORT}/api/implementations`);
+      console.log(`💬 Chat API: http://localhost:${PORT}/api/chat`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
