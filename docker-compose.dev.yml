@@ -5,32 +5,32 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
-    container_name: ndc-chatbot-backend-dev
+    container_name: handy-randy-backend-dev
     environment:
       - NODE_ENV=development
-      - PORT=3001
-      - DATABASE_PATH=/app/data/ndc_chatbot.db
+      - PORT=3010
+      - DATABASE_PATH=/app/data/handy_randy.db
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
     volumes:
       - ./backend:/app
       - backend_data:/app/data
       - /app/node_modules
     ports:
-      - "3001:3001"
+      - "3010:3010"
     command: npm run dev
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-    container_name: ndc-chatbot-frontend-dev
+    container_name: handy-randy-frontend-dev
     environment:
-      - REACT_APP_API_URL=http://localhost:3001
+      - REACT_APP_API_URL=http://localhost:3010
     volumes:
       - ./frontend:/app
       - /app/node_modules
     ports:
-      - "3000:3000"
+      - "3011:3000"
     depends_on:
       - backend
     command: npm start
