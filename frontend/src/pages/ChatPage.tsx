@@ -233,8 +233,8 @@ export const ChatPage: React.FC = () => {
     <div className="chat-page">
       <div className="page-header">
         <div className="page-title">
-          <h1>AI Chat Assistant</h1>
-          <p>Ask questions about airline features and NDC implementations</p>
+          <h1>HandyRandy NDC AI</h1>
+          <p>Your intelligent assistant for airline NDC features and implementations</p>
         </div>
 
         {messages.length > 0 && (

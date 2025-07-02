@@ -45,8 +45,8 @@ export const Navigation: React.FC<NavigationProps> = ({
       <div className="nav-container">
         {/* Brand */}
         <div className="nav-brand">
-          <div className="nav-brand-icon">NDC</div>
-          <span>Features Manager</span>
+          <div className="nav-brand-icon">🤖</div>
+          <span>HandyRandy NDC AI</span>
         </div>
 
         {/* Desktop Navigation */}

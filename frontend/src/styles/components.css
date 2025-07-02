@@ -21,6 +21,7 @@
   flex-direction: column;
   height: calc(100vh - 64px);
   background-color: var(--background-primary);
+  padding: var(--spacing-md);
 }
 
 .chat-container {
@@ -28,8 +29,8 @@
   flex-direction: column;
   flex: 1;
   max-width: 1200px;
+  width: 1200px;
   margin: 0 auto;
-  width: 100%;
   background-color: var(--background-secondary);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -87,6 +88,10 @@
   margin-bottom: var(--spacing-sm);
   font-size: var(--font-size-xs);
   opacity: 0.8;
+}
+
+.chat-message.user .chat-message-header {
+  opacity: 0.9;
 }
 
 .chat-message-role {
@@ -632,10 +637,48 @@
   cursor: pointer;
   border-radius: var(--radius-sm);
   transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
 }
 
 .cell-content:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  transform: scale(1.02);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Status-based coloring for matrix cells */
+.cell-content.status-yes {
+  background-color: #E8F5E8;
+  border-color: #C8E6C9;
+}
+
+.cell-content.status-no {
+  background-color: #FFEBEE;
+  border-color: #FFCDD2;
+}
+
+.cell-content.status-limited {
+  background-color: #FFF3E0;
+  border-color: #FFCC02;
+}
+
+.cell-content.status-pilot {
+  background-color: var(--egencia-blue-lighter);
+  border-color: var(--egencia-blue);
+}
+
+.cell-content.status-production {
+  background-color: #E8F5E8;
+  border-color: #C8E6C9;
+}
+
+.cell-content.status-development {
+  background-color: #FFFDE7;
+  border-color: #FFF176;
+}
+
+.cell-content.status-planned {
+  background-color: #F3E5F5;
+  border-color: #CE93D8;
 }
 
 .cell-value {
@@ -732,6 +775,11 @@
 .legend-color.status-no {
   background-color: #FFEBEE;
   border-color: #FFCDD2;
+}
+
+.legend-color.status-planned {
+  background-color: #F3E5F5;
+  border-color: #CE93D8;
 }
 
 .matrix-help {
@@ -850,12 +898,25 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1240px) {
+  .chat-container {
+    width: calc(100vw - 2 * var(--spacing-md));
+    max-width: calc(100vw - 2 * var(--spacing-md));
+  }
+}
+
 @media (max-width: 768px) {
   .main-container {
     padding: var(--spacing-md);
   }
   
+  .chat-page {
+    padding: var(--spacing-sm);
+  }
+  
   .chat-container {
+    width: calc(100vw - 2 * var(--spacing-sm));
+    max-width: calc(100vw - 2 * var(--spacing-sm));
     margin: 0;
     border-radius: 0;
   }

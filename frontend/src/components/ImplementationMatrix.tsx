@@ -114,11 +114,14 @@ export const ImplementationMatrix: React.FC<ImplementationMatrixProps> = ({
   };
 
   const getStatusClass = (value: string): string => {
-    const lowerValue = value.toLowerCase();
+    const lowerValue = value.toLowerCase().trim();
     if (lowerValue === 'yes') return 'status-yes';
     if (lowerValue === 'no') return 'status-no';
     if (lowerValue === 'limited') return 'status-limited';
     if (lowerValue === 'pilot') return 'status-pilot';
+    if (lowerValue === 'production') return 'status-production';
+    if (lowerValue === 'development') return 'status-development';
+    if (lowerValue === 'planned') return 'status-planned';
     return 'status-other';
   };
 
