@@ -4,6 +4,7 @@ import { chatAPI } from '../services/api';
 import { ChatMessage } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
 import { ExampleQueries } from '../components/ExampleQueries';
+import { ConversationStorage } from '../utils/conversationStorage';
 
 export const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
@@ -14,6 +15,7 @@ export const ChatPage: React.FC = () => {
   });
   const [isServiceAvailable, setIsServiceAvailable] = useState<boolean | null>(null);
   const [isSending, setIsSending] = useState(false);
+  const [conversationRestored, setConversationRestored] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -23,11 +25,19 @@ export const ChatPage: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Load examples and check service availability on mount
+  // Load examples, check service availability, and restore conversation on mount
   useEffect(() => {
     loadExamples();
     checkServiceAvailability();
+    loadStoredConversation();
   }, []);
+
+  // Save conversation whenever messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      ConversationStorage.saveConversation(messages);
+    }
+  }, [messages]);
 
   const loadExamples = async () => {
     try {
@@ -114,8 +124,32 @@ export const ChatPage: React.FC = () => {
     handleSendMessage(query);
   };
 
+  const loadStoredConversation = () => {
+    try {
+      const storedMessages = ConversationStorage.loadConversation();
+      if (storedMessages.length > 0) {
+        setMessages(storedMessages);
+        setConversationRestored(true);
+        console.log(`Restored ${storedMessages.length} messages from previous session`);
+        
+        // Hide restoration notice after 3 seconds
+        setTimeout(() => {
+          setConversationRestored(false);
+        }, 3000);
+      }
+    } catch (error) {
+      console.warn('Failed to load stored conversation:', error);
+    }
+  };
+
   const clearChat = () => {
     setMessages([]);
+    ConversationStorage.clearConversation();
+  };
+
+  const resetConversation = () => {
+    setMessages([]);
+    ConversationStorage.clearConversation();
   };
 
   const renderServiceStatus = () => {
@@ -168,6 +202,13 @@ export const ChatPage: React.FC = () => {
       <>
         {renderServiceStatus()}
         
+        {conversationRestored && (
+          <div className="conversation-restored-notice">
+            <span className="status-icon">💬</span>
+            <span>Previous conversation restored</span>
+          </div>
+        )}
+        
         {messages.length === 0 && examples.length > 0 && isServiceAvailable && (
           <ExampleQueries
             examples={examples}
@@ -199,18 +240,20 @@ export const ChatPage: React.FC = () => {
         {messages.length > 0 && (
           <div className="page-actions">
             <button
-              onClick={clearChat}
+              onClick={resetConversation}
               className="btn btn-secondary"
               disabled={isSending}
+              title="Reset conversation and clear history"
             >
-              🗑️ Clear Chat
+              🔄 Reset Chat
             </button>
             <button
               onClick={checkServiceAvailability}
               className="btn btn-secondary"
               disabled={isSending}
+              title="Check AI service status"
             >
-              🔄 Check Status
+              ⚡ Check Status
             </button>
           </div>
         )}

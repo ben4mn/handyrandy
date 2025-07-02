@@ -36,3 +36,38 @@
     transform: rotate(360deg);
   }
 }
+
+/* Conversation restoration notice */
+.conversation-restored-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  margin: 16px;
+  background-color: #e3f2fd;
+  border: 1px solid #1976d2;
+  border-radius: 8px;
+  color: #1976d2;
+  font-size: 14px;
+  font-weight: 500;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+.conversation-restored-notice .status-icon {
+  font-size: 16px;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10%, 80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
