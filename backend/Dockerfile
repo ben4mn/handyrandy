@@ -1,16 +1,33 @@
-# Use Node.js LTS
-FROM node:18-alpine
+# Multi-stage build
+# Stage 1: Build the frontend
+FROM node:18-alpine AS frontend-build
 
-# Set working directory
+WORKDIR /app/frontend
+
+# Copy frontend package files
+COPY ../frontend/package*.json ./
+
+# Install frontend dependencies
+RUN npm install
+
+# Copy frontend source
+COPY ../frontend ./
+
+# Build the React app
+RUN npm run build
+
+# Stage 2: Build the backend
+FROM node:18-alpine AS backend-build
+
 WORKDIR /app
 
-# Copy package files
+# Copy backend package files
 COPY package*.json ./
 
 # Install all dependencies (including dev dependencies needed for build)
 RUN npm install
 
-# Copy source code
+# Copy backend source code
 COPY . .
 
 # Build TypeScript
@@ -19,6 +36,19 @@ RUN npm run build
 # Remove dev dependencies to reduce image size
 RUN npm prune --omit=dev
 
+# Stage 3: Final runtime image
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy built backend from backend-build stage
+COPY --from=backend-build /app/node_modules ./node_modules
+COPY --from=backend-build /app/dist ./dist
+COPY --from=backend-build /app/package*.json ./
+
+# Copy built frontend from frontend-build stage
+COPY --from=frontend-build /app/frontend/build ./frontend-build
+
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
@@ -26,6 +56,7 @@ RUN adduser -S nextjs -u 1001
 # Create data directory for SQLite
 RUN mkdir -p /app/data
 RUN chown -R nextjs:nodejs /app/data
+RUN chown -R nextjs:nodejs /app
 
 # Switch to non-root user
 USER nextjs
