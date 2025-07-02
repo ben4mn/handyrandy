@@ -5,19 +5,19 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: ndc-chatbot-backend
+    container_name: handy-randy-backend
     environment:
       - NODE_ENV=production
-      - PORT=3001
-      - DATABASE_PATH=/app/data/ndc_chatbot.db
+      - PORT=3010
+      - DATABASE_PATH=/app/data/handy_randy.db
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
     volumes:
       - backend_data:/app/data
     ports:
-      - "3001:3001"
+      - "3010:3010"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3010/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -26,9 +26,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: ndc-chatbot-frontend
+    container_name: handy-randy-frontend
     ports:
-      - "80:80"
+      - "3011:80"
     depends_on:
       - backend
     restart: unless-stopped
@@ -44,4 +44,4 @@ volumes:
 
 networks:
   default:
-    name: ndc-chatbot-network
+    name: handy-randy-network
