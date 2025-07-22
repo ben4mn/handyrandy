@@ -11,6 +11,7 @@ services:
       - PORT=3010
       - DATABASE_PATH=/app/data/handy_randy.db
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ANTHROPIC_MODEL=${ANTHROPIC_MODEL:-claude-3.5-sonnet-20240620}
     volumes:
       - backend_data:/app/data
     ports:

@@ -40,6 +40,12 @@ This system allows users to query airline NDC feature data using natural languag
 3. Set up environment variables
 4. Run development servers: `npm run dev`
 
+### Environment Variables
+The application requires an Anthropic API key and optionally a model name.
+
+- `ANTHROPIC_API_KEY` – your Anthropic API key
+- `ANTHROPIC_MODEL` – model to use (default: `claude-3.5-sonnet-20240620`)
+
 ### Docker Development
 1. Build containers: `docker-compose build`
 2. Start services: `docker-compose up`
