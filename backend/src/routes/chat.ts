@@ -55,10 +55,11 @@ export function createChatRouter(dbService: DatabaseService): Router {
     console.warn('⚠️  ANTHROPIC_API_KEY not set - chat functionality will be disabled');
   }
   
+  const model = process.env.ANTHROPIC_MODEL;
   let claudeService: ClaudeService | null = null;
   if (apiKey) {
     try {
-      claudeService = new ClaudeService(dbService, apiKey);
+      claudeService = new ClaudeService(dbService, apiKey, model);
     } catch (error) {
       console.error('Failed to initialize Claude service:', error);
     }

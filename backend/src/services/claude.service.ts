@@ -23,17 +23,19 @@ export class ClaudeService {
   private anthropic: Anthropic;
   private dbService: DatabaseService;
   private queryParser: QueryParserService;
+  private model: string;
 
-  constructor(dbService: DatabaseService, apiKey?: string) {
+  constructor(dbService: DatabaseService, apiKey?: string, model?: string) {
     if (!apiKey) {
       throw new Error('Anthropic API key is required');
     }
-    
+
     this.anthropic = new Anthropic({
       apiKey: apiKey,
     });
     this.dbService = dbService;
     this.queryParser = new QueryParserService(dbService);
+    this.model = model || process.env.ANTHROPIC_MODEL || 'claude-3.5-sonnet-20240620';
   }
 
   /**
@@ -59,7 +61,7 @@ export class ClaudeService {
       
       // Call Claude API (using legacy completions API)
       const response = await this.anthropic.completions.create({
-        model: 'claude-2.1',
+        model: this.model,
         max_tokens_to_sample: 1000,
         prompt: conversationPrompt,
       });
@@ -222,7 +224,7 @@ Intelligently filtered data context for your query:`;
       const testPrompt = `${HUMAN_PROMPT} Hello, can you confirm you can respond? Just say "AI connection successful"${AI_PROMPT}`;
       
       const response = await this.anthropic.completions.create({
-        model: 'claude-2.1',
+        model: this.model,
         max_tokens_to_sample: 100,
         prompt: testPrompt,
       });
