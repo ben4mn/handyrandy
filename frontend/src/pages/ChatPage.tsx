@@ -142,10 +142,6 @@ export const ChatPage: React.FC = () => {
     }
   };
 
-  const clearChat = () => {
-    setMessages([]);
-    ConversationStorage.clearConversation();
-  };
 
   const resetConversation = () => {
     setMessages([]);

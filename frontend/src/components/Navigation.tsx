@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface NavigationProps {
   currentPage: string;
@@ -22,23 +22,6 @@ export const Navigation: React.FC<NavigationProps> = ({
     { id: 'chat', label: 'AI Chat', icon: '💬' },
   ];
 
-  const getStatusIcon = () => {
-    switch (apiStatus) {
-      case 'online': return '✅';
-      case 'offline': return '❌';
-      case 'checking': return '🔄';
-      default: return '❓';
-    }
-  };
-
-  const getStatusText = () => {
-    switch (apiStatus) {
-      case 'online': return 'API Connected';
-      case 'offline': return 'API Offline';
-      case 'checking': return 'Checking...';
-      default: return 'Unknown';
-    }
-  };
 
   return (
     <nav className="navigation">

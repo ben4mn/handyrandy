@@ -35,7 +35,7 @@ export class ClaudeService {
     });
     this.dbService = dbService;
     this.queryParser = new QueryParserService(dbService);
-    this.model = model || process.env.ANTHROPIC_MODEL || 'claude-3.5-sonnet-20240620';
+    this.model = model || process.env.ANTHROPIC_MODEL || 'claude-3-5-sonnet-20241022';
   }
 
   /**
@@ -53,26 +53,24 @@ export class ClaudeService {
       // Build the system prompt with context
       const systemPrompt = this.buildSystemPrompt(context);
       
-      // Build conversation history
+      // Build message history for Messages API
       const messages = this.buildMessageHistory(request);
       
-      // Build conversation prompt
-      const conversationPrompt = this.buildConversationPrompt(systemPrompt, messages);
-      
-      // Call Claude API (using legacy completions API)
-      const response = await this.anthropic.completions.create({
+      // Call Claude API using Messages API
+      const response = await this.anthropic.messages.create({
         model: this.model,
-        max_tokens_to_sample: 1000,
-        prompt: conversationPrompt,
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: messages,
       });
 
-      const assistantResponse = response.completion;
-      if (!assistantResponse) {
-        throw new Error('No response from Claude');
+      const assistantResponse = response.content[0];
+      if (!assistantResponse || assistantResponse.type !== 'text') {
+        throw new Error('No valid response from Claude');
       }
 
       return {
-        response: assistantResponse,
+        response: assistantResponse.text,
         context: context,
         timestamp: new Date(),
       };
@@ -81,7 +79,6 @@ export class ClaudeService {
       throw new Error('Failed to process message with AI');
     }
   }
-
 
   /**
    * Build the system prompt with context data
@@ -116,17 +113,16 @@ When answering questions:
 8. Keep the conversational concise and minimal while also naturally flowing 
 
 Example of a good response: 
-Question: which airlines have dynnamic pricing in pilot? 
+Question: which airlines have dynamic pricing in pilot? 
 Answer: Based on the data provided, United Airlines (UA) has dynamic pricing in pilot testing phase. Specifically, the data shows:
 
 "United Airlines (UA) - Dynamic pricing: Pilot (Testing phase)"
 
 Example of a bad response: 
-Question: which airlines have dynnamic pricing in pilot? 
+Question: which airlines have dynamic pricing in pilot? 
 Answer: United Airlines (UA) has dynamic pricing in pilot testing phase. Specifically, the data shows:
 "United Airlines (UA) - Dynamic pricing: Pilot (Testing phase)"
 So United Airlines is currently piloting and testing dynamic pricing capabilities through their NDC implementation with Sabre.
-
 
 Intelligently filtered data context for your query:`;
 
@@ -165,34 +161,10 @@ Intelligently filtered data context for your query:`;
   }
 
   /**
-   * Build conversation prompt for legacy completions API
+   * Build message history for Messages API
    */
-  private buildConversationPrompt(systemPrompt: string, messages: any[]): string {
-    const { HUMAN_PROMPT, AI_PROMPT } = require('@anthropic-ai/sdk');
-    
-    let prompt = systemPrompt + '\n\n';
-    
-    messages.forEach(msg => {
-      if (msg.role === 'user') {
-        prompt += `${HUMAN_PROMPT} ${msg.content}`;
-      } else if (msg.role === 'assistant') {
-        prompt += `${AI_PROMPT} ${msg.content}`;
-      }
-    });
-    
-    // Ensure we end with AI_PROMPT for the assistant to respond
-    if (!prompt.endsWith(AI_PROMPT)) {
-      prompt += AI_PROMPT;
-    }
-    
-    return prompt;
-  }
-
-  /**
-   * Build message history for Claude API
-   */
-  private buildMessageHistory(request: ChatRequest): any[] {
-    const messages: any[] = [];
+  private buildMessageHistory(request: ChatRequest): Anthropic.MessageParam[] {
+    const messages: Anthropic.MessageParam[] = [];
 
     // Add conversation history if provided
     if (request.conversationHistory) {
@@ -216,21 +188,25 @@ Intelligently filtered data context for your query:`;
   }
 
   /**
-   * Test the Claude API connection
+   * Test the Claude API connection using Messages API
    */
   async testConnection(): Promise<boolean> {
     try {
-      const { HUMAN_PROMPT, AI_PROMPT } = require('@anthropic-ai/sdk');
-      const testPrompt = `${HUMAN_PROMPT} Hello, can you confirm you can respond? Just say "AI connection successful"${AI_PROMPT}`;
-      
-      const response = await this.anthropic.completions.create({
+      const response = await this.anthropic.messages.create({
         model: this.model,
-        max_tokens_to_sample: 100,
-        prompt: testPrompt,
+        max_tokens: 10,
+        messages: [
+          {
+            role: 'user',
+            content: 'Hello, can you confirm you can respond? Just say "AI connection successful"'
+          }
+        ],
       });
 
-      return response.completion && 
-             response.completion.toLowerCase().includes('successful');
+      const content = response.content[0];
+      return content && 
+             content.type === 'text' && 
+             content.text.toLowerCase().includes('successful');
     } catch (error) {
       console.error('Claude API test failed:', error);
       return false;
