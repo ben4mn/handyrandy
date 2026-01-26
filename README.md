@@ -1,74 +1,49 @@
-# NDC Features AI Chatbot
+# HandyRandy
 
-An AI-powered chatbot system for querying NDC (New Distribution Capability) feature implementation data across airlines and providers.
-
-## Project Overview
-
-This system allows users to query airline NDC feature data using natural language through an AI-powered chat interface. It includes a data management interface for maintaining airline, feature, and implementation data.
-
-## Technology Stack
-
-- **Frontend**: React.js with TypeScript
-- **Backend**: Node.js/Express.js with TypeScript  
-- **Database**: SQLite
-- **AI**: Anthropic Claude API
-- **Containerization**: Docker & Docker Compose
-- **Deployment**: Debian Linux server
-
-## Project Structure
-
-```
-/
-├── frontend/          # React TypeScript app
-├── backend/           # Node.js Express API
-├── docker/            # Docker configuration files
-├── docs/              # Documentation
-├── docker-compose.yml # Multi-container setup
-└── README.md          # This file
-```
-
-## Development Setup
-
-### Prerequisites
-- Node.js 18+
-- Docker & Docker Compose
-- Git
-
-### Local Development
-1. Clone the repository
-2. Install dependencies: `npm install` in both frontend/ and backend/
-3. Set up environment variables
-4. Run development servers: `npm run dev`
-
-### Environment Variables
-The application requires an Anthropic API key and optionally a model name.
-
-- `ANTHROPIC_API_KEY` – your Anthropic API key
-- `ANTHROPIC_MODEL` – model to use (default: `claude-3.5-sonnet-20240620`)
-
-### Docker Development
-1. Build containers: `docker-compose build`
-2. Start services: `docker-compose up`
+An intelligent assistant that answers complex queries by navigating a matrix of interconnected information. Originally designed to help teams understand NDC airline features and capabilities, HandyRandy processes natural language questions and returns contextually relevant answers. The architecture supports Slack '@' mention integration for seamless team communication.
 
 ## Features
 
-- **Data Management**: CRUD operations for airlines, features, and implementations
-- **Implementation Matrix**: Grid interface for feature-airline relationships  
-- **Natural Language Queries**: AI-powered question answering
-- **Chat Interface**: Conversational UI with history
+- Matrix-based knowledge navigation
+- Natural language query processing
+- Designed for Slack @ mention integration
+- Docker containerized frontend and backend
+- Extensible to any domain-specific knowledge base
 
-## Documentation
+## Tech Stack
 
-See the `docs/` directory for detailed documentation:
-- `vision.md` - Project vision and architecture
-- `instructions.md` - Implementation milestones and requirements
+Node.js, React, Docker, Express
 
-## Contributing
+## Getting Started
 
-1. Create feature branch: `git checkout -b feature/your-feature`
-2. Make changes and commit: `git commit -m "feat: description"`
-3. Push branch and create pull request
+### Prerequisites
+
+- Node.js 18+
+- Docker and Docker Compose (for containerized deployment)
+
+### Installation
+
+```bash
+git clone https://github.com/ben4mn/handyrandy.git
+cd handyrandy
+npm run install:all
+```
+
+### Running
+
+```bash
+# Development mode (frontend and backend concurrently)
+npm run dev
+
+# Or run separately
+npm run dev:frontend
+npm run dev:backend
+
+# Docker deployment
+npm run docker:build
+npm run docker:up
+```
 
 ## License
 
-[Add license information]
+MIT
